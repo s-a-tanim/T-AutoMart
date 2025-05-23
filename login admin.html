@@ -3,39 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T AutoMart - Admin Controller</title>
+    <title>T AutoMart - Admin Dashboard</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
         header {
-            background-color: #1e3a8a;
-            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .logo {
             font-size: 1.8rem;
             font-weight: bold;
+            color: white;
+            text-decoration: none;
         }
 
         .logo span {
             color: #fbbf24;
+        }
+
+        .firebase-status {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .firebase-connected {
+            background: rgba(34, 197, 94, 0.2);
+            color: #16a34a;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .firebase-disconnected {
+            background: rgba(239, 68, 68, 0.2);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
         .login-container {
@@ -47,302 +73,112 @@
         }
 
         .login-form {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
             padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 400px;
-            transition: all 0.3s ease;
+        }
+
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
         }
 
         .admin-dashboard {
-            display: none;
             flex: 1;
             padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        h2 {
-            color: #1e3a8a;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #4b5563;
-            font-weight: 500;
-        }
-
-        input[type="text"],
-        input[type="password"],
-        input[type="number"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus,
-        input[type="password"]:focus,
-        input[type="number"]:focus,
-        select:focus,
-        textarea:focus {
-            border-color: #1e3a8a;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
-        }
-
-        button {
-            background-color: #1e3a8a;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #1c366b;
-        }
-
-        .alert {
-            padding: 1rem;
-            border-radius: 6px;
-            margin-bottom: 1.5rem;
-            font-weight: 500;
-        }
-
-        .alert-danger {
-            background-color: #fee2e2;
-            color: #b91c1c;
-            border: 1px solid #fecaca;
-        }
-
-        .alert-success {
-            background-color: #d1fae5;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
+            display: none;
         }
 
         .tab-navigation {
             display: flex;
+            gap: 1rem;
             margin-bottom: 2rem;
-            border-bottom: 1px solid #e5e7eb;
         }
 
         .tab-btn {
             padding: 0.75rem 1.5rem;
-            background: none;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
-            border-bottom: 3px solid transparent;
-            font-weight: 600;
-            color: #6b7280;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
             cursor: pointer;
-            width: auto;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
-        .tab-btn.active {
-            color: #1e3a8a;
-            border-bottom-color: #1e3a8a;
+        .tab-btn.active,
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
         .tab-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
             display: none;
-            animation: fadeIn 0.5s ease;
         }
 
         .tab-content.active {
             display: block;
         }
 
-        /* Car form styling */
         .car-form {
-            background-color: white;
-            border-radius: 10px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
         }
 
         .form-row {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .form-row .form-group {
-            flex: 1;
-            margin-bottom: 0;
-        }
-
-        .logout-btn {
-            background-color: #ef4444;
-            margin-top: 1.5rem;
-        }
-
-        .logout-btn:hover {
-            background-color: #dc2626;
-        }
-
-        .image-preview-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 1rem;
-            margin-top: 1rem;
+            margin-bottom: 1rem;
         }
 
-        .image-preview {
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            padding: 0.5rem;
-            position: relative;
-            height: 150px;
+        .form-group {
+            margin-bottom: 1rem;
         }
 
-        .image-preview img {
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-
-        .remove-image {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: rgba(239, 68, 68, 0.8);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .file-upload {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2rem;
-            border: 2px dashed #d1d5db;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
             border-radius: 8px;
-            background-color: #f9fafb;
-            cursor: pointer;
-            transition: all 0.3s;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
         }
 
-        .file-upload:hover {
-            border-color: #1e3a8a;
-            background-color: #f3f4f6;
-        }
-
-        .upload-icon {
-            font-size: 2rem;
-            color: #6b7280;
-            margin-bottom: 1rem;
-        }
-
-        .car-list {
-            margin-top: 2rem;
-        }
-
-        .car-list-item {
-            display: flex;
-            align-items: center;
-            padding: 1rem;
-            background-color: white;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-
-        .car-list-image {
-            width: 80px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 4px;
-            margin-right: 1rem;
-        }
-
-        .car-list-info {
-            flex: 1;
-        }
-
-        .car-list-title {
-            font-weight: 600;
-            color: #1e3a8a;
-            margin-bottom: 0.25rem;
-        }
-
-        .car-list-details {
-            font-size: 0.875rem;
-            color: #6b7280;
-        }
-
-        .car-list-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-edit, .btn-delete {
-            padding: 0.5rem;
-            border-radius: 4px;
-            width: auto;
-        }
-
-        .btn-edit {
-            background-color: #3b82f6;
-        }
-
-        .btn-edit:hover {
-            background-color: #2563eb;
-        }
-
-        .btn-delete {
-            background-color: #ef4444;
-        }
-
-        .btn-delete:hover {
-            background-color: #dc2626;
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
         }
 
         .status-toggle {
             display: flex;
             align-items: center;
-            margin-top: 1rem;
-        }
-
-        .status-toggle label {
-            margin-right: 1rem;
-            margin-bottom: 0;
+            gap: 1rem;
         }
 
         .toggle-switch {
             position: relative;
             display: inline-block;
-            width: 50px;
-            height: 24px;
+            width: 60px;
+            height: 34px;
         }
 
         .toggle-switch input {
@@ -359,100 +195,286 @@
             right: 0;
             bottom: 0;
             background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
+            transition: 0.4s;
+            border-radius: 34px;
         }
 
         .slider:before {
             position: absolute;
             content: "";
-            height: 16px;
-            width: 16px;
+            height: 26px;
+            width: 26px;
             left: 4px;
             bottom: 4px;
             background-color: white;
-            transition: .4s;
+            transition: 0.4s;
             border-radius: 50%;
         }
 
         input:checked + .slider {
-            background-color: #10b981;
+            background-color: #16a34a;
         }
 
         input:checked + .slider:before {
             transform: translateX(26px);
         }
 
-        .status-text {
-            margin-left: 10px;
+        .file-upload {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+
+        .file-upload:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .image-preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .image-preview {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f3f4f6;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .car-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .car-list-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .car-list-item:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .car-list-image {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .car-list-info {
+            flex: 1;
+        }
+
+        .car-list-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .car-list-details {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: white;
+            margin-left: 0.5rem;
+        }
+
+        .car-list-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-edit,
+        .btn-delete {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #2563eb;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        button[type="submit"]:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .logout-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .logout-btn:hover {
+            background: rgba(220, 38, 38, 0.9);
+        }
+
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
             font-weight: 500;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .alert-success {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         footer {
-            background-color: #0f172a;
-            color: white;
-            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             padding: 1rem;
-            margin-top: auto;
+            text-align: center;
+            color: white;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Responsive styling */
         @media (max-width: 768px) {
             .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .tab-navigation {
                 flex-direction: column;
-                gap: 1.5rem;
             }
             
-            .login-form, .car-form {
-                padding: 1.5rem;
+            .car-list-item {
+                flex-direction: column;
+                align-items: flex-start;
             }
             
-            .admin-dashboard {
-                padding: 1rem;
-            }
-            
-            .tab-btn {
-                padding: 0.75rem 1rem;
-                font-size: 0.9rem;
+            .car-list-actions {
+                align-self: stretch;
+                justify-content: space-between;
             }
         }
-
-        /* Make the logo text clickable */
-a.logo {
-    text-decoration: none; /* Remove default underline */
-    color: inherit; /* Inherit color from the parent */
-    font-weight: bold;
-}
-
-/* Optional: Add hover effect */
-a.logo:hover {
-    color: #007BFF; /* Change to desired color */
-    text-decoration: underline; /* Underline on hover */
-}
-
-/* Prevent the color from changing when clicked (visited state) */
-a.logo:visited {
-    color: inherit; /* Ensure the color remains the same as the default */
-}
-
     </style>
 </head>
 <body>
     <header>
-    <a href="index.html" class="logo">T Auto<span>Mart</span></a>
-    <div id="header-actions"></div>
+        <a href="index.html" class="logo">T Auto<span>Mart</span></a>
+        <div id="header-actions"></div>
     </header>
+
+    <div id="firebase-status" class="firebase-status firebase-disconnected">
+        🔴 Firebase Disconnected
+    </div>
 
     <div class="login-container" id="login-container">
         <div class="login-form">
@@ -553,14 +575,20 @@ a.logo:visited {
                     <div class="image-preview-container" id="image-preview"></div>
                 </div>
 
-                <button type="submit">Add Vehicle</button>
+                <button type="submit">
+                    <span id="submit-btn-text">Add Vehicle</span>
+                    <span id="submit-btn-loading" class="loading" style="display: none;"></span>
+                </button>
             </form>
         </div>
 
         <div id="manage-cars" class="tab-content">
             <h2>Manage Vehicles</h2>
             <div id="car-list" class="car-list">
-                <!-- Car list items will be added here dynamically -->
+                <div style="text-align: center; padding: 2rem;">
+                    <div class="loading"></div>
+                    <p style="margin-top: 1rem; color: #6b7280;">Loading vehicles...</p>
+                </div>
             </div>
         </div>
 
@@ -571,403 +599,568 @@ a.logo:visited {
         <p>&copy; 2025 T AutoMart. All Rights Reserved.</p>
     </footer>
 
-<script>
-// Admin credentials (example only — should be server-side in real apps)
-const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD = 'tanim619';
+    <!-- Firebase SDKs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-firestore-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-storage-compat.min.js"></script>
 
-// Load cars from localStorage or default
-let cars = JSON.parse(localStorage.getItem('tAutoMartCars')) || [
-  {
-    id: 1,
-    make: 'toyota',
-    model: 'C-HR GT',
-    year: '2022',
-    price: '3700000',
-    color: 'Red',
-    mileage: '35420',
-    description: 'Premium Japanese import in excellent condition',
-    status: 'available',
-    images: ['img/CHR-GT.jpg', 'img/CHR-GT/front.jpg', 'img/CHR-GT/dash.jpg']
-  },
-  {
-    id: 2,
-    make: 'toyota',
-    model: 'Fielder Hybrid Ex',
-    year: '2022',
-    price: '2750000',
-    color: 'White',
-    mileage: '12850',
-    description: 'Low mileage hybrid vehicle, fuel efficient',
-    status: 'available',
-    images: ['img/fielder white/front.jpg', 'img/fielder white/rear.jpg']
-  }
-];
+    <script>
+        // Firebase Configuration - Updated with your credentials
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUQdsGY8uz-U2kjzj7J8bM8a2mz-62IsI",
+            authDomain: "t-automart.firebaseapp.com",
+            projectId: "t-automart",
+            storageBucket: "t-automart.firebasestorage.app",
+            messagingSenderId: "991276660416",
+            appId: "1:991276660416:web:b4468838b206e23c521f25",
+            measurementId: "G-640V7VD1BZ"
+        };
 
-// DOM references
-const loginContainer = document.getElementById('login-container');
-const adminDashboard = document.getElementById('admin-dashboard');
-const loginForm = document.getElementById('login-form');
-const loginAlert = document.getElementById('login-alert');
-const carForm = document.getElementById('car-form');
-const carFormAlert = document.getElementById('car-form-alert');
-const logoutBtn = document.getElementById('logout-btn');
-const tabButtons = document.querySelectorAll('.tab-btn');
-const tabContents = document.querySelectorAll('.tab-content');
-const carList = document.getElementById('car-list');
-const carStatus = document.getElementById('car-status');
-const statusText = document.getElementById('status-text');
-const yearSelect = document.getElementById('car-year');
-const fileUpload = document.getElementById('file-upload');
-const carImages = document.getElementById('car-images');
-const imagePreview = document.getElementById('image-preview');
-const headerActions = document.getElementById('header-actions');
+        // Initialize Firebase
+        let db, storage, isFirebaseConnected = false;
+        
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            storage = firebase.storage();
+            isFirebaseConnected = true;
+            updateFirebaseStatus(true);
+            console.log('Firebase initialized successfully');
+        } catch (error) {
+            console.error('Firebase initialization failed:', error);
+            updateFirebaseStatus(false);
+        }
 
-// Edit mode tracking
-let isEditMode = false;
-let editingCarId = null;
+        // Admin credentials
+        const ADMIN_USERNAME = 'admin';
+        const ADMIN_PASSWORD = 'tanim619';
 
-// Populate year dropdown
-const currentYear = new Date().getFullYear();
-for (let i = currentYear + 1; i >= currentYear - 10; i--) {
-  const option = document.createElement('option');
-  option.value = i;
-  option.textContent = i;
-  yearSelect.appendChild(option);
-}
+        // Global variables
+        let cars = [];
+        let isEditMode = false;
+        let editingCarId = null;
 
-// On load
-document.addEventListener('DOMContentLoaded', () => {
-  if (localStorage.getItem('tAutoMartAdmin') === 'loggedIn') {
-    showAdminDashboard();
-    renderCarList();
-  }
+        // DOM references
+        const loginContainer = document.getElementById('login-container');
+        const adminDashboard = document.getElementById('admin-dashboard');
+        const loginForm = document.getElementById('login-form');
+        const loginAlert = document.getElementById('login-alert');
+        const carForm = document.getElementById('car-form');
+        const carFormAlert = document.getElementById('car-form-alert');
+        const logoutBtn = document.getElementById('logout-btn');
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const carList = document.getElementById('car-list');
+        const carStatus = document.getElementById('car-status');
+        const statusText = document.getElementById('status-text');
+        const yearSelect = document.getElementById('car-year');
+        const fileUpload = document.getElementById('file-upload');
+        const carImages = document.getElementById('car-images');
+        const imagePreview = document.getElementById('image-preview');
+        const headerActions = document.getElementById('header-actions');
+        const submitBtnText = document.getElementById('submit-btn-text');
+        const submitBtnLoading = document.getElementById('submit-btn-loading');
+        const firebaseStatus = document.getElementById('firebase-status');
 
-  carStatus.addEventListener('change', () => {
-    statusText.textContent = carStatus.checked ? 'Available' : 'Sold';
-  });
+        // Update Firebase connection status
+        function updateFirebaseStatus(connected) {
+            isFirebaseConnected = connected;
+            if (connected) {
+                firebaseStatus.textContent = '🟢 Firebase Connected';
+                firebaseStatus.className = 'firebase-status firebase-connected';
+            } else {
+                firebaseStatus.textContent = '🔴 Firebase Disconnected';
+                firebaseStatus.className = 'firebase-status firebase-disconnected';
+            }
+        }
 
-  fileUpload.addEventListener('click', () => carImages.click());
-  carImages.addEventListener('change', handleImageUpload);
-  initDragAndDrop();
-});
+        // Populate year dropdown
+        const currentYear = new Date().getFullYear();
+        for (let i = currentYear + 1; i >= currentYear - 10; i--) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            yearSelect.appendChild(option);
+        }
 
-// Login
-loginForm.addEventListener('submit', e => {
-  e.preventDefault();
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value;
-  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-    localStorage.setItem('tAutoMartAdmin', 'loggedIn');
-    showAdminDashboard();
-    renderCarList();
-  } else {
-    showAlert(loginAlert, 'Invalid username or password', 'danger');
-  }
-});
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check if admin is logged in (using memory instead of localStorage)
+            const adminStatus = sessionStorage.getItem('tAutoMartAdmin');
+            if (adminStatus === 'loggedIn') {
+                showAdminDashboard();
+                await loadCarsFromFirebase();
+            }
 
-// Handle add/edit car
-carForm.addEventListener('submit', e => {
-  e.preventDefault();
-  try {
-    const formData = validateAndGetFormData();
-    if (!formData) return;
+            // Event listeners
+            carStatus.addEventListener('change', () => {
+                statusText.textContent = carStatus.checked ? 'Available' : 'Sold';
+            });
 
-    if (isEditMode && editingCarId !== null) {
-      updateCar(editingCarId, formData);
-      showAlert(carFormAlert, 'Vehicle updated successfully!', 'success');
-    } else {
-      addNewCar(formData);
-      showAlert(carFormAlert, 'Vehicle added successfully!', 'success');
-    }
+            fileUpload.addEventListener('click', () => carImages.click());
+            carImages.addEventListener('change', handleImageUpload);
+            initDragAndDrop();
 
-    resetCarForm();
-    renderCarList();
-  } catch (err) {
-    showAlert(carFormAlert, `Error: ${err.message}`, 'danger');
-  }
-});
+            // Listen for real-time updates
+            if (isFirebaseConnected) {
+                listenForCarUpdates();
+            }
+        });
 
-// Unified add, update, delete with localStorage
-function addNewCar(carData) {
-  const newCar = { id: Date.now(), ...carData };
-  cars.push(newCar);
-  localStorage.setItem('tAutoMartCars', JSON.stringify(cars));
-}
+        // Firebase Functions
+        async function loadCarsFromFirebase() {
+            if (!isFirebaseConnected) {
+                showAlert(carFormAlert, 'Firebase not connected. Using offline mode.', 'danger');
+                return;
+            }
 
-function updateCar(id, carData) {
-  const index = cars.findIndex(c => c.id === id);
-  if (index !== -1) {
-    cars[index] = { id, ...carData };
-    localStorage.setItem('tAutoMartCars', JSON.stringify(cars));
-  } else {
-    throw new Error('Car not found');
-  }
-}
+            try {
+                const snapshot = await db.collection('cars').orderBy('createdAt', 'desc').get();
+                cars = [];
+                snapshot.forEach(doc => {
+                    cars.push({ id: doc.id, ...doc.data() });
+                });
+                renderCarList();
+            } catch (error) {
+                console.error('Error loading cars:', error);
+                showAlert(carFormAlert, 'Error loading vehicles from database', 'danger');
+            }
+        }
 
-function deleteCar(id) {
-  if (confirm('Are you sure you want to delete this vehicle?')) {
-    cars = cars.filter(c => c.id !== id);
-    localStorage.setItem('tAutoMartCars', JSON.stringify(cars));
-    renderCarList();
-    if (isEditMode && editingCarId === id) resetCarForm();
-  }
-}
+        function listenForCarUpdates() {
+            if (!isFirebaseConnected) return;
 
-// Validate form
-function validateAndGetFormData() {
-  const make = document.getElementById('car-make').value.trim();
-  const model = document.getElementById('car-model').value.trim();
-  const year = document.getElementById('car-year').value.trim();
-  const price = document.getElementById('car-price').value.trim();
-  const color = document.getElementById('car-color').value.trim();
-  const mileage = document.getElementById('car-mileage').value.trim();
-  const description = document.getElementById('car-description').value.trim();
-  const status = carStatus.checked ? 'available' : 'sold';
+            db.collection('cars').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                cars = [];
+                snapshot.forEach(doc => {
+                    cars.push({ id: doc.id, ...doc.data() });
+                });
+                renderCarList();
+            }, error => {
+                console.error('Error listening for updates:', error);
+                updateFirebaseStatus(false);
+            });
+        }
 
-  if (!make || !model || !year || !price || !color || !mileage) {
-    showAlert(carFormAlert, 'Please fill in all required fields', 'danger');
-    return null;
-  }
+        async function uploadImageToFirebase(file) {
+            if (!isFirebaseConnected) {
+                throw new Error('Firebase not connected. Cannot upload images.');
+            }
 
-  const imageElements = imagePreview.querySelectorAll('img');
-  const images = Array.from(imageElements).map(img => img.src);
+            const fileName = `cars/${Date.now()}_${file.name}`;
+            const storageRef = storage.ref().child(fileName);
+            
+            try {
+                const snapshot = await storageRef.put(file);
+                const downloadURL = await snapshot.ref.getDownloadURL();
+                return downloadURL;
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                throw new Error(`Failed to upload ${file.name}`);
+            }
+        }
 
-  if (images.length === 0) {
-    showAlert(carFormAlert, 'Please upload at least one image', 'danger');
-    return null;
-  }
+        async function addCarToFirebase(carData) {
+            if (!isFirebaseConnected) {
+                throw new Error('Firebase not connected. Cannot save vehicle.');
+            }
 
-  return { make, model, year, price, color, mileage, description, status, images };
-}
+            try {
+                carData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                carData.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+                await db.collection('cars').add(carData);
+            } catch (error) {
+                console.error('Error adding car:', error);
+                throw new Error('Failed to save vehicle to database');
+            }
+        }
 
-// Reset form
-function resetCarForm() {
-  carForm.reset();
-  imagePreview.innerHTML = '';
-  statusText.textContent = 'Available';
-  isEditMode = false;
-  editingCarId = null;
-  carForm.querySelector('button[type="submit"]').textContent = 'Add Vehicle';
-}
+        async function updateCarInFirebase(id, carData) {
+            if (!isFirebaseConnected) {
+                throw new Error('Firebase not connected. Cannot update vehicle.');
+            }
 
-// Image upload
-function handleImageUpload() {
-  const files = carImages.files;
-  if (files.length === 0) return;
+            try {
+                carData.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+                await db.collection('cars').doc(id).update(carData);
+            } catch (error) {
+                console.error('Error updating car:', error);
+                throw new Error('Failed to update vehicle in database');
+            }
+        }
 
-  Array.from(files).forEach(file => {
-    if (!file.type.match('image.*')) {
-      showAlert(carFormAlert, `File ${file.name} is not an image`, 'danger');
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      showAlert(carFormAlert, `File ${file.name} exceeds 5MB`, 'danger');
-      return;
-    }
+        async function deleteCarFromFirebase(id) {
+            if (!isFirebaseConnected) {
+                throw new Error('Firebase not connected. Cannot delete vehicle.');
+            }
 
-    const reader = new FileReader();
-    reader.onload = e => addImagePreview(e.target.result);
-    reader.onerror = () => showAlert(carFormAlert, `Error reading ${file.name}`, 'danger');
-    reader.readAsDataURL(file);
-  });
-}
+            try {
+                await db.collection('cars').doc(id).delete();
+            } catch (error) {
+                console.error('Error deleting car:', error);
+                throw new Error('Failed to delete vehicle from database');
+            }
+        }
 
-function addImagePreview(src) {
-  const imgContainer = document.createElement('div');
-  imgContainer.className = 'image-preview';
-  const img = document.createElement('img');
-  img.src = src;
-  img.alt = 'Car Image';
-  img.onerror = () => {
-    img.src = '/api/placeholder/150/150';
-    img.alt = 'Image not available';
-  };
+        // Login
+        loginForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                sessionStorage.setItem('tAutoMartAdmin', 'loggedIn');
+                showAdminDashboard();
+                loadCarsFromFirebase();
+            } else {
+                showAlert(loginAlert, 'Invalid username or password', 'danger');
+            }
+        });
 
-  const removeBtn = document.createElement('button');
-  removeBtn.className = 'remove-image';
-  removeBtn.innerHTML = '×';
-  removeBtn.onclick = e => {
-    e.preventDefault();
-    imgContainer.remove();
-  };
+        // Handle add/edit car
+        carForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            
+            // Show loading state
+            submitBtnText.style.display = 'none';
+            submitBtnLoading.style.display = 'inline-block';
+            carForm.querySelector('button[type="submit"]').disabled = true;
 
-  imgContainer.appendChild(img);
-  imgContainer.appendChild(removeBtn);
-  imagePreview.appendChild(imgContainer);
-}
+            try {
+                const formData = await validateAndGetFormData();
+                if (!formData) return;
 
-// Drag & drop
-function initDragAndDrop() {
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName =>
-    fileUpload.addEventListener(eventName, e => {
-      e.preventDefault();
-      e.stopPropagation();
-    })
-  );
-  ['dragenter', 'dragover'].forEach(eventName =>
-    fileUpload.addEventListener(eventName, () => {
-      fileUpload.style.borderColor = '#1e3a8a';
-      fileUpload.style.backgroundColor = '#eff6ff';
-    })
-  );
-  ['dragleave', 'drop'].forEach(eventName =>
-    fileUpload.addEventListener(eventName, () => {
-      fileUpload.style.borderColor = '#d1d5db';
-      fileUpload.style.backgroundColor = '#f9fafb';
-    })
-  );
-  fileUpload.addEventListener('drop', e => {
-    carImages.files = e.dataTransfer.files;
-    handleImageUpload();
-  });
-}
+                if (isEditMode && editingCarId !== null) {
+                    await updateCarInFirebase(editingCarId, formData);
+                    showAlert(carFormAlert, 'Vehicle updated successfully!', 'success');
+                } else {
+                    await addCarToFirebase(formData);
+                    showAlert(carFormAlert, 'Vehicle added successfully!', 'success');
+                }
 
-// Render car list
-function renderCarList() {
-  carList.innerHTML = '';
-  if (cars.length === 0) {
-    carList.innerHTML = '<p style="text-align:center;color:#6b7280;">No vehicles available</p>';
-    return;
-  }
+                resetCarForm();
+            } catch (err) {
+                console.error('Form submission error:', err);
+                showAlert(carFormAlert, `Error: ${err.message}`, 'danger');
+            } finally {
+                // Hide loading state
+                submitBtnText.style.display = 'inline';
+                submitBtnLoading.style.display = 'none';
+                carForm.querySelector('button[type="submit"]').disabled = false;
+            }
+        });
 
-  cars.forEach(car => {
-    const item = document.createElement('div');
-    item.className = 'car-list-item';
+        // Validate form and get data
+        async function validateAndGetFormData() {
+            const make = document.getElementById('car-make').value.trim();
+            const model = document.getElementById('car-model').value.trim();
+            const year = document.getElementById('car-year').value.trim();
+            const price = document.getElementById('car-price').value.trim();
+            const color = document.getElementById('car-color').value.trim();
+            const mileage = document.getElementById('car-mileage').value.trim();
+            const description = document.getElementById('car-description').value.trim();
+            const status = carStatus.checked ? 'available' : 'sold';
 
-    const thumb = document.createElement('img');
-    thumb.src = car.images[0] || '/api/placeholder/80/60';
-    thumb.alt = `${car.make} ${car.model}`;
-    thumb.className = 'car-list-image';
-    thumb.onerror = () => (thumb.src = '/api/placeholder/80/60');
+            if (!make || !model || !year || !price || !color || !mileage) {
+                showAlert(carFormAlert, 'Please fill in all required fields', 'danger');
+                return null;
+            }
 
-    const info = document.createElement('div');
-    info.className = 'car-list-info';
+            // Handle images
+            let images = [];
+            const imageElements = imagePreview.querySelectorAll('img');
+            
+            if (imageElements.length === 0) {
+                showAlert(carFormAlert, 'Please upload at least one image', 'danger');
+                return null;
+            }
 
-    const title = document.createElement('div');
-    title.className = 'car-list-title';
-    title.textContent = `${car.model} (${car.year})`;
+            // Upload new images to Firebase Storage
+            const files = carImages.files;
+            if (files.length > 0) {
+                showAlert(carFormAlert, 'Uploading images...', 'success');
+                
+                for (let i = 0; i < files.length; i++) {
+                    try {
+                        const imageUrl = await uploadImageToFirebase(files[i]);
+                        images.push(imageUrl);
+                    } catch (error) {
+                        showAlert(carFormAlert, `Error uploading ${files[i].name}: ${error.message}`, 'danger');
+                        return null;
+                    }
+                }
+            } else {
+                // Use existing images (for edit mode)
+                images = Array.from(imageElements).map(img => img.src);
+            }
 
-const details = document.createElement('div');
-details.className = 'car-list-details';
+            return { make, model, year, price, color, mileage, description, status, images };
+        }
 
-const statusBadge = document.createElement('span');
-statusBadge.className = 'status-badge';
-statusBadge.textContent = car.status === 'available' ? 'Available' : 'Sold';
-statusBadge.style.backgroundColor = car.status === 'available' ? '#16a34a' : '#dc2626'; // green or red
-statusBadge.style.color = 'white';
-statusBadge.style.padding = '2px 8px';
-statusBadge.style.borderRadius = '9999px';
-statusBadge.style.marginLeft = '8px';
-statusBadge.style.fontSize = '0.75rem';
+        // Reset form
+        function resetCarForm() {
+            carForm.reset();
+            imagePreview.innerHTML = '';
+            statusText.textContent = 'Available';
+            isEditMode = false;
+            editingCarId = null;
+            submitBtnText.textContent = 'Add Vehicle';
+        }
 
-details.textContent = `৳${Number(car.price).toLocaleString()} | ${car.mileage} km `;
-details.appendChild(statusBadge);
+        // Image upload handling
+        function handleImageUpload() {
+            const files = carImages.files;
+            if (files.length === 0) return;
 
+            Array.from(files).forEach(file => {
+                if (!file.type.match('image.*')) {
+                    showAlert(carFormAlert, `File ${file.name} is not an image`, 'danger');
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                    showAlert(carFormAlert, `File ${file.name} exceeds 5MB`, 'danger');
+                    return;
+                }
 
-    info.appendChild(title);
-    info.appendChild(details);
+                const reader = new FileReader();
+                reader.onload = e => addImagePreview(e.target.result);
+                reader.onerror = () => showAlert(carFormAlert, `Error reading ${file.name}`, 'danger');
+                reader.readAsDataURL(file);
+            });
+        }
 
-    const actions = document.createElement('div');
-    actions.className = 'car-list-actions';
+        function addImagePreview(src) {
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'image-preview';
+            
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = 'Car Image';
+            img.onerror = () => {
+                img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik03NSA0MEMzNi40NCA0MCA1IDcxLjQ0IDUgMTEwUzM2LjQ0IDE4MCA3NSAxODBTMTQ1IDE0OC41NiAxNDUgMTEwUzExMy41NiA0MCA3NSA0MFoiIGZpbGw9IiNEMUQ1REIiLz4KPHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIwIDI2LjY2NjdDMjMuNjgyIDI2LjY2NjcgMjYuNjY2NyAyMy42ODIgMjYuNjY2NyAyMEMyNi42NjY3IDE2LjMxOCAyMy42ODIgMTMuMzMzMyAyMCAxMy4zMzMzQzE2LjMxOCAxMy4zMzMzIDEzLjMzMzMgMTYuMzE4IDEzLjMzMzMgMjBDMTMuMzMzMyAyMy42ODIgMTYuMzE4IDI2LjY2NjcgMjAgMjYuNjY2N1oiIGZpbGw9IiM5Q0E1QUYiLz4KPC9zdmc+Cjwvc3ZnPg==';
+                img.alt = 'Image not available';
+            };
 
-    const editBtn = document.createElement('button');
-    editBtn.className = 'btn-edit';
-    editBtn.textContent = 'Edit';
-    editBtn.onclick = () => editCar(car.id);
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-image';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = e => {
+                e.preventDefault();
+                imgContainer.remove();
+            };
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'btn-delete';
-    deleteBtn.textContent = 'Delete';
-    deleteBtn.onclick = () => deleteCar(car.id);
+            imgContainer.appendChild(img);
+            imgContainer.appendChild(removeBtn);
+            imagePreview.appendChild(imgContainer);
+        }
 
-    actions.appendChild(editBtn);
-    actions.appendChild(deleteBtn);
+        // Drag & drop functionality
+        function initDragAndDrop() {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName =>
+                fileUpload.addEventListener(eventName, e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                })
+            );
+            
+            ['dragenter', 'dragover'].forEach(eventName =>
+                fileUpload.addEventListener(eventName, () => {
+                    fileUpload.style.borderColor = '#1e3a8a';
+                    fileUpload.style.backgroundColor = '#eff6ff';
+                })
+            );
+            
+            ['dragleave', 'drop'].forEach(eventName =>
+                fileUpload.addEventListener(eventName, () => {
+                    fileUpload.style.borderColor = '#d1d5db';
+                    fileUpload.style.backgroundColor = '#f9fafb';
+                })
+            );
+            
+            fileUpload.addEventListener('drop', e => {
+                carImages.files = e.dataTransfer.files;
+                handleImageUpload();
+            });
+        }
 
-    item.appendChild(thumb);
-    item.appendChild(info);
-    item.appendChild(actions);
+        // Render car list
+        function renderCarList() {
+            carList.innerHTML = '';
+            
+            if (cars.length === 0) {
+                carList.innerHTML = '<p style="text-align:center;color:#6b7280;padding:2rem;">No vehicles available</p>';
+                return;
+            }
 
-    carList.appendChild(item);
-  });
-}
+            cars.forEach(car => {
+                const item = document.createElement('div');
+                item.className = 'car-list-item';
 
-// Edit car
-function editCar(id) {
-  const car = cars.find(c => c.id === id);
-  if (!car) {
-    showAlert(carFormAlert, 'Car not found', 'danger');
-    return;
-  }
+                const thumb = document.createElement('img');
+                thumb.src = car.images && car.images[0] ? car.images[0] : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA4MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik00MCAyMEM0MCAyNy43MzIgMzUuNTIzIDM0LjQwNjMgMjkgMzguNDA2M0gyMy41QzE3LjQ3NyAzNC40MDYzIDEzIDI3LjczMiAxMyAyMEMxMyAxMi4yNjggMTcuNDc3IDUuNTkzNzUgMjMuNSAxLjU5Mzc1SDI5QzM1LjUyMyA1LjU5Mzc1IDQwIDEyLjI2OCA0MCAyMFoiIGZpbGw9IiNEMUQ1REIiLz4KPHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEwIDEzLjMzMzNDMTEuODQwOSAxMy4zMzMzIDEzLjMzMzMgMTEuODQwOSAxMy4zMzMzIDEwQzEzLjMzMzMgOC4xNTkwNSAxMS44NDA5IDYuNjY2NjcgMTAgNi42NjY2N0M4LjE1OTA1IDYuNjY2NjcgNi42NjY2NyA4LjE1OTA1IDYuNjY2NjcgMTBDNi42NjY2NyAxMS44NDA5IDguMTU5MDUgMTMuMzMzMyAxMCAxMy4zMzMzWiIgZmlsbD0iIzlDQTVBRiIvPgo8L3N2Zz4KPC9zdmc+';
+                thumb.alt = `${car.make} ${car.model}`;
+                thumb.className = 'car-list-image';
+                thumb.onerror = () => (thumb.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA4MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik00MCAyMEM0MCAyNy43MzIgMzUuNTIzIDM0LjQwNjMgMjkgMzguNDA2M0gyMy41QzE3LjQ3NyAzNC40MDYzIDEzIDI3LjczMiAxMyAyMEMxMyAxMi4yNjggMTcuNDc3IDUuNTkzNzUgMjMuNSAxLjU5Mzc1SDI5QzM1LjUyMyA1LjU5Mzc1IDQwIDEyLjI2OCA0MCAyMFoiIGZpbGw9IiNEMUQ1REIiLz4KPHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEwIDEzLjMzMzNDMTEuODQwOSAxMy4zMzMzIDEzLjMzMzMgMTEuODQwOSAxMy4zMzMzIDEwQzEzLjMzMzMgOC4xNTkwNSAxMS44NDA5IDYuNjY2NjcgMTAgNi42NjY2N0M4LjE1OTA1IDYuNjY2NjcgNi42NjY2NyA4LjE1OTA1IDYuNjY2NjcgMTBDNi42NjY2NyAxMS44NDA5IDguMTU5MDUgMTMuMzMzMyAxMCAxMy4zMzMzWiIgZmlsbD0iIzlDQTVBRiIvPgo8L3N2Zz4KPC9zdmc+');
 
-  isEditMode = true;
-  editingCarId = id;
+                const info = document.createElement('div');
+                info.className = 'car-list-info';
 
-  tabButtons.forEach(btn => {
-    btn.classList.remove('active');
-    if (btn.getAttribute('data-tab') === 'add-car') btn.classList.add('active');
-  });
+                const title = document.createElement('div');
+                title.className = 'car-list-title';
+                title.textContent = `${car.model} (${car.year})`;
 
-  tabContents.forEach(content => {
-    content.classList.remove('active');
-    if (content.id === 'add-car') content.classList.add('active');
-  });
+                const details = document.createElement('div');
+                details.className = 'car-list-details';
 
-  document.getElementById('car-make').value = car.make;
-  document.getElementById('car-model').value = car.model;
-  document.getElementById('car-year').value = car.year;
-  document.getElementById('car-price').value = car.price;
-  document.getElementById('car-color').value = car.color;
-  document.getElementById('car-mileage').value = car.mileage;
-  document.getElementById('car-description').value = car.description;
-  carStatus.checked = car.status === 'available';
-  statusText.textContent = car.status;
+                const statusBadge = document.createElement('span');
+                statusBadge.className = 'status-badge';
+                statusBadge.textContent = car.status === 'available' ? 'Available' : 'Sold';
+                statusBadge.style.backgroundColor = car.status === 'available' ? '#16a34a' : '#dc2626';
 
-  imagePreview.innerHTML = '';
-  car.images.forEach(addImagePreview);
+                details.textContent = `৳${Number(car.price).toLocaleString()} | ${car.mileage} km `;
+                details.appendChild(statusBadge);
 
-  carForm.querySelector('button[type="submit"]').textContent = 'Update Vehicle';
-}
+                info.appendChild(title);
+                info.appendChild(details);
 
-// UI helpers
-function showAdminDashboard() {
-  loginContainer.style.display = 'none';
-  adminDashboard.style.display = 'block';
-  headerActions.innerHTML = `<span style="color:white;">Welcome, Admin</span>`;
-}
+                const actions = document.createElement('div');
+                actions.className = 'car-list-actions';
 
-function showLoginForm() {
-  loginContainer.style.display = 'flex';
-  adminDashboard.style.display = 'none';
-  headerActions.innerHTML = '';
-}
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn-edit';
+                editBtn.textContent = 'Edit';
+                editBtn.onclick = () => editCar(car.id);
 
-function showAlert(element, message, type) {
-  element.textContent = message;
-  element.className = `alert alert-${type}`;
-  element.style.display = 'block';
-  setTimeout(() => (element.style.display = 'none'), 5000);
-}
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn-delete';
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.onclick = () => deleteCar(car.id);
 
-// Logout
-logoutBtn.addEventListener('click', () => {
-  localStorage.removeItem('tAutoMartAdmin');
-  showLoginForm();
-});
+                actions.appendChild(editBtn);
+                actions.appendChild(deleteBtn);
 
-// Tab switching
-tabButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const tabId = button.getAttribute('data-tab');
-    tabButtons.forEach(btn => btn.classList.remove('active'));
-    button.classList.add('active');
-    tabContents.forEach(content => {
-      content.classList.remove('active');
-      if (content.id === tabId) content.classList.add('active');
-    });
-  });
-});
-</script>
+                item.appendChild(thumb);
+                item.appendChild(info);
+                item.appendChild(actions);
 
+                carList.appendChild(item);
+            });
+        }
+
+        // Edit car
+        function editCar(id) {
+            const car = cars.find(c => c.id === id);
+            if (!car) {
+                showAlert(carFormAlert, 'Car not found', 'danger');
+                return;
+            }
+
+            isEditMode = true;
+            editingCarId = id;
+
+            // Switch to add car tab
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-tab') === 'add-car') btn.classList.add('active');
+            });
+
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+                if (content.id === 'add-car') content.classList.add('active');
+            });
+
+            // Populate form with car data
+            document.getElementById('car-make').value = car.make;
+            document.getElementById('car-model').value = car.model;
+            document.getElementById('car-year').value = car.year;
+            document.getElementById('car-price').value = car.price;
+            document.getElementById('car-color').value = car.color;
+            document.getElementById('car-mileage').value = car.mileage;
+            document.getElementById('car-description').value = car.description || '';
+            carStatus.checked = car.status === 'available';
+            statusText.textContent = car.status === 'available' ? 'Available' : 'Sold';
+
+            // Show existing images
+            imagePreview.innerHTML = '';
+            if (car.images && car.images.length > 0) {
+                car.images.forEach(addImagePreview);
+            }
+
+            submitBtnText.textContent = 'Update Vehicle';
+        }
+
+        // Delete car
+        async function deleteCar(id) {
+            if (!confirm('Are you sure you want to delete this vehicle?')) {
+                return;
+            }
+
+            try {
+                await deleteCarFromFirebase(id);
+                showAlert(carFormAlert, 'Vehicle deleted successfully!', 'success');
+                
+                if (isEditMode && editingCarId === id) {
+                    resetCarForm();
+                }
+            } catch (error) {
+                console.error('Error deleting car:', error);
+                showAlert(carFormAlert, `Error deleting vehicle: ${error.message}`, 'danger');
+            }
+        }
+
+        // UI helper functions
+        function showAdminDashboard() {
+            loginContainer.style.display = 'none';
+            adminDashboard.style.display = 'block';
+            headerActions.innerHTML = '<span style="color:white;">Welcome, Admin</span>';
+        }
+
+        function showLoginForm() {
+            loginContainer.style.display = 'flex';
+            adminDashboard.style.display = 'none';
+            headerActions.innerHTML = '';
+        }
+
+        function showAlert(element, message, type) {
+            element.textContent = message;
+            element.className = `alert alert-${type}`;
+            element.style.display = 'block';
+            setTimeout(() => (element.style.display = 'none'), 5000);
+        }
+
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            sessionStorage.removeItem('tAutoMartAdmin');
+            showLoginForm();
+            resetCarForm();
+        });
+
+        // Tab switching
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === tabId) content.classList.add('active');
+                });
+            });
+        });
+
+        // Error handling for Firebase connection issues
+        window.addEventListener('online', () => {
+            if (isFirebaseConnected) {
+                updateFirebaseStatus(true);
+                loadCarsFromFirebase();
+            }
+        });
+
+        window.addEventListener('offline', () => {
+            updateFirebaseStatus(false);
+        });
+    </script>
 </body>
 </html>
