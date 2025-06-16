@@ -137,11 +137,12 @@
 
         .search-container select,
         .search-container button {
-            padding: 12px 15px;
+            padding: 10px 15px;
             border: 1px solid #ccc;
             border-radius: 8px;
-            font-size: 16px;
-            min-height: 50px; /* Larger touch target */
+            font-size: 14px;
+            min-width: 100px; /* Adjust minimum width if needed */
+            min-height: 40px; /* Larger touch target */
         }
 
         .search-container select {
@@ -1093,30 +1094,8 @@ of premium and affordable vehicles. Trusted by thousands of satisfied customers 
                 <option value="2022">2022</option>
                 <option value="2021">2021</option>
             </select>
-            <select name="price" id="price">
-                <option value="">Price Range</option>
-                <option value="1500000">Under ৳1,500,000</option>
-                <option value="2500000">Under ৳2,500,000</option>
-                <option value="3500000">Under ৳3,500,000</option>
-                <option value="5000000">Under ৳5,000,000</option>
-            </select>
-            <select name="status" id="status">
-                <option value="">Status</option>
-                <option value="available">Available</option>
-                <option value="sold">Sold</option>
-            </select>
             <button id="search-btn">Search Cars</button>
         </div>
-    </section>
-
-    <section id="imports" class="japan-import">
-        <div class="logo-container">
-            <!-- Insert your own logo image here -->
-            <img src="./logo black.png" alt="Japanese Import Specialists Logo" class="import-logo">
-        </div>
-        <h2>Japanese Import Specialists</h2>
-        <p>We import high-quality, reliable vehicles directly from Japan and deliver them all across Bangladesh. Our team ensures each car meets strict quality standards and handles all customs clearance and documentation.</p>
-        <a href="#services" class="btn">Learn About Our Import Process</a>
     </section>
 
 
@@ -1128,6 +1107,16 @@ of premium and affordable vehicles. Trusted by thousands of satisfied customers 
     <p id="loading-cars" style="text-align: center; color: #6b7280;">Loading vehicles...</p>
   </div>
 </section>
+
+    <section id="imports" class="japan-import">
+        <div class="logo-container">
+            <!-- Insert your own logo image here -->
+            <img src="./logo black.png" alt="Japanese Import Specialists Logo" class="import-logo">
+        </div>
+        <h2>Japanese Import Specialists</h2>
+        <p>We import high-quality, reliable vehicles directly from Japan and deliver them all across Bangladesh. Our team ensures each car meets strict quality standards and handles all customs clearance and documentation.</p>
+        <a href="#services" class="btn">Learn About Our Import Process</a>
+    </section>
 
 <!-- Image Popup Modal -->
 <div id="images-popup" style="display:none;">
