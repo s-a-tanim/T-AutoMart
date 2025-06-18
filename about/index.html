@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>T AutoMart - Premium Car Sales</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #fbbf24;
+        }
+
+        /* Mobile menu button */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            display: block;
+            padding: 0.5rem 0;
+        }
+
+        nav ul li a:hover {
+            color: #fbbf24;
+        }
+
+        .hero {
+            position: relative;
+            background-image: url('img/back-1.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 0 2rem;
+            overflow: hidden;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeInUp 1s ease-out forwards;
+            animation-delay: 0.3s;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 3px 3px 0 #ff6600, 6px 6px 0 #333333;
+        }
+
+        /* Search Section */
+        .search-section {
+            background-color: #f4f4f4;
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .search-container select,
+        .search-container button {
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            min-width: 100px; /* Adjust minimum width if needed */
+            min-height: 40px; /* Larger touch target */
+        }
+
+        .search-container select {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .search-container button {
+            background-color: #1e3a8a;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .search-container button:hover {
+            background-color: #e05500;
+        }
+
+        /* Button Styling */
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #ff6600;
+            color: white;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.3s;
+            text-align: center;
+            min-width: 150px; /* Ensure good tap target size */
+        }
+
+        .btn:hover {
+            background: #e05500;
+            transform: scale(1.05);
+        }
+
+        .japan-import {
+            background-color: #fff9db;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .japan-import h2 {
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+        }
+
+        .japan-import p {
+            max-width: 800px;
+            margin: 0 auto 1.5rem;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .featured-cars {
+            padding: 4rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            color: #1e3a8a;
+            font-size: 2rem;
+        }
+
+        .cars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .car-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .car-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .car-img {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            cursor: pointer; /* Add cursor pointer to indicate clickable */
+        }
+
+        .car-details {
+            padding: 1.5rem;
+        }
+
+        .car-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #1e3a8a;
+        }
+
+        .status-price-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .car-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #f59e0b;
+        }
+
+        .car-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.2rem;
+            color: #666;
+        }
+
+        .car-status {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .car-status:before {
+            content: "";
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .car-status.available:before {
+            background-color: #10b981; /* Green color */
+            box-shadow: 0 0 5px #10b981;
+        }
+
+        .car-status.sold:before {
+            background-color: #ef4444; /* Red color */
+            box-shadow: 0 0 5px #ef4444;
+        }
+
+
+
+        .car-card .car-status.sold:after {
+            content: "Sold";
+        }
+
+        /* Status Legend */
+        .status-legend {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 30px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Add explicit text for status legend items */
+        .status-legend .status-item:nth-child(1):after {
+            content: "Available";
+            margin-left: 8px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .status-legend .status-item:nth-child(2):after {
+            content: "Sold";
+            margin-left: 8px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .services {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 4rem 1.5rem;
+        }
+
+        .services-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.2rem;
+            color: #fbbf24;
+        }
+
+        .service-title {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .testimonials {
+            padding: 4rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+
+        .author-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 1rem;
+            object-fit: cover;
+        }
+
+        .author-info h4 {
+            color: #1e3a8a;
+            margin-bottom: 0.3rem;
+        }
+
+        .author-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            background-color: #0f172a;
+            color: white;
+            padding: 4rem 1.5rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .footer-column h3 {
+            color: #fbbf24;
+            margin-bottom: 1.2rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column ul li a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s;
+            display: block;
+            padding: 0.3rem 0;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        .social-icons a:hover {
+            background-color: #fbbf24;
+            color: #0f172a;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+        }
+
+        /* Car color popup styles */
+        #color-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #1e3a8a;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .color-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #1e3a8a;
+            border-bottom: 2px solid #fbbf24;
+            padding-bottom: 10px;
+        }
+
+        .car-detail-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .car-images-slider {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 0;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: #1e3a8a #f1f1f1;
+        }
+
+        .car-images-slider::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .car-images-slider::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .car-images-slider::-webkit-scrollbar-thumb {
+            background: #1e3a8a;
+            border-radius: 10px;
+        }
+
+        .car-image-item {
+            flex: 0 0 auto;
+            width: 280px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .car-image-item img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .car-specifications {
+            background-color: #f9fafb;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .spec-group {
+            margin-bottom: 20px;
+        }
+
+        .spec-title {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .spec-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .spec-label {
+            font-weight: 500;
+            color: #4b5563;
+        }
+
+        .spec-value {
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        /* Keyframes for animation */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #1e3a8a;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 99;
+            font-size: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background-color: #ff6600;
+            transform: translateY(-3px);
+        }
+
+        /* Loading indicator */
+        .loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #1e3a8a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile hamburger menu */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            nav {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: #1e3a8a;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.5s ease;
+            }
+
+            nav.active {
+                max-height: 300px;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            nav ul {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            nav ul li {
+                margin: 0;
+                width: 100%;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            nav ul li:last-child {
+                border-bottom: none;
+            }
+
+            nav ul li a {
+                padding: 1rem 0;
+                display: block;
+                width: 100%;
+            }
+
+            .hero {
+                height: 400px;
+            }
+
+            .hero-title {
+                font-size: 32px;
+                text-shadow: 2px 2px 0 #ff6600, 4px 4px 0 #333333;
+            }
+
+            .japan-import, .featured-cars, .services, .testimonials {
+                padding: 3rem 1rem;
+            }
+
+            .section-title {
+                font-size: 1.7rem;
+                margin-bottom: 2rem;
+            }
+
+            .search-container {
+                padding: 15px;
+            }
+
+            .car-detail-container {
+                flex-direction: column;
+            }
+
+            .car-specifications {
+                max-height: none;
+            }
+
+            .spec-list {
+                grid-template-columns: 1fr;
+            }
+
+            .popup-content {
+                padding: 15px;
+            }
+
+            .color-title {
+                font-size: 1.5rem;
+                padding-right: 40px;
+            }
+        }
+
+        /* Additional mobile optimizations */
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .hero-title {
+                font-size: 28px;
+                text-shadow: 1px 1px 0 #ff6600, 3px 3px 0 #333333;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .btn {
+                padding: 10px 20px;
+            }
+
+            .search-container select,
+            .search-container button {
+                width: 100%;
+            }
+
+            .cars-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .car-image-item {
+                width: 100%;
+            }
+        }
+
+        /* Tablet optimizations */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .cars-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .services-container,
+            .testimonial-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .car-detail-container {
+                flex-direction: row;
+            }
+
+            .car-images-slider {
+                flex: 3;
+                flex-direction: column;
+                overflow-y: auto;
+                overflow-x: hidden;
+                max-height: 500px;
+            }
+
+            .car-image-item {
+                width: 100%;
+            }
+
+            .car-specifications {
+                flex: 2;
+                max-height: 500px;
+                overflow-y: auto;
+            }
+        }
+
+
+        .copyright {
+            text-align: center;
+            padding: 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+            color: #e3e3e3;
+            background-color:  #1f2937;
+          }
+          .copyright a {
+            color: #24a556;
+            text-decoration: none;
+          }
+          .copyright a:hover {
+            text-decoration: underline;
+          }
+
+          /* Japanese Import Section Styling */
+/* Japanese Import Section Styling */
+.japan-import {
+    background-color: #FFF9DB;
+    padding: 40px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    text-align: center;
+  }
+
+  .japan-import .logo-container {
+    margin-bottom: 25px;
+  }
+
+  .japan-import .import-logo {
+    max-width: 160px;
+    height: auto;
+  }
+
+  .japan-import h2 {
+    color: #1e3a8a;
+    margin-bottom: 20px;
+    font-size: 28px;
+  }
+
+  .japan-import p {
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+
+
+
+  .japan-import .btn:hover {
+    background-color: #E05500;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .japan-import .import-logo {
+      max-width: 120px;
+    }
+
+    .japan-import h2 {
+      font-size: 24px;
+    }
+  }
+
+  /* Back to top button improved styling */
+  .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #ff6600;
+      color: white;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+      z-index: 99;
+      font-size: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .back-to-top.show {
+      opacity: 1;
+      visibility: visible;
+  }
+
+  .back-to-top:hover {
+      background-color: #1e3a8a;
+      transform: translateY(-3px);
+  }
+
+  /* Additional styles for the new image popup */
+  #images-popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      overflow-y: auto;
+  }
+
+  .popup-content {
+      background-color: #fff;
+      width: 90%;
+      max-width: 900px;
+      border-radius: 8px;
+      padding: 20px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+  }
+
+  .close-popup {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      font-size: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+  }
+
+  .car-title-popup {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+  }
+
+  .car-images-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+  }
+
+  .car-image-item {
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 15px;
+  }
+
+  .car-image-item img {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  /* Make car cards look clickable */
+  .car-card {
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .car-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+    </style>
+</head>
+<body>
+
+    <!-- Progress indicator at top of page -->
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar"></div>
+</div>
+
+    <header>
+        <div class="logo">T Auto<span>Mart</span></div>
+        <button class="menu-toggle" id="menu-toggle">☰</button>
+        <nav id="main-nav">
+            <ul>
+                <li><a href="#imports">About</a></li>
+                <!-- <li><a href="#home">Home</a></li> -->
+                <li><a href="#cars">Cars</a></li>
+                <li><a href="#services">Services</a></li>
+
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Find Your Perfect Car</h1>
+            <p>Browse our extensive collection
+of premium and affordable vehicles. Trusted by thousands of satisfied customers across Bangladesh.</p>
+            <a href="#cars" class="btn">Explore Inventory</a>
+        </div>
+    </section>
+
+
+    <!-- Search Section -->
+    <section id="search" class="search-section">
+        <div class="search-container">
+            <select name="make" id="make">
+                <option value="">Select Make</option>
+                <option value="toyota">Toyota</option>
+                <option value="honda">Honda</option>
+                <option value="mazda">Mazda</option>
+                <option value="nissan">Nissan</option>
+                <option value="suzuki">Suzuki</option>
+            </select>
+            <select name="model" id="model">
+                <option value="">Select Model</option>
+            </select>
+            <select name="year" id="year">
+                <option value="">Select Year</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+            </select>
+            <button id="search-btn">Search Cars</button>
+        </div>
+    </section>
+
+
+<!-- Featured Cars Section -->
+<section id="cars" class="featured-cars">
+  <h2 class="section-title">Featured Vehicles</h2>
+  <div class="cars-grid" id="car-grid">
+    <!-- Loading message -->
+    <p id="loading-cars" style="text-align: center; color: #6b7280;">Loading vehicles...</p>
+  </div>
+</section>
+
+    <section id="imports" class="japan-import">
+        <div class="logo-container">
+            <!-- Insert your own logo image here -->
+            <img src="./logo black.png" alt="Japanese Import Specialists Logo" class="import-logo">
+        </div>
+        <h2>Japanese Import Specialists</h2>
+        <p>We import high-quality, reliable vehicles directly from Japan and deliver them all across Bangladesh. Our team ensures each car meets strict quality standards and handles all customs clearance and documentation.</p>
+        <a href="#services" class="btn">Learn About Our Import Process</a>
+    </section>
+
+<!-- Image Popup Modal -->
+<div id="images-popup" style="display:none;">
+  <div class="popup-content">
+    <button class="close-popup">&times;</button>
+    <h2 class="car-title-popup">Car Images</h2>
+    <div class="car-images-container" id="car-images-container"></div>
+  </div>
+</div>
+
+    <section id="services" class="services">
+        <h2 class="section-title" style="color: white;">Our Services</h2>
+        <div class="services-container">
+            <div class="service-card">
+                <div class="service-icon">🚗</div>
+                <h3 class="service-title">Import Service</h3>
+                <p>Direct import of quality vehicles from Japan with full documentation and customs clearance.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">💰</div>
+                <h3 class="service-title">Financing Options</h3>
+                <p>Flexible financing solutions with competitive rates and tailored payment plans.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🔧</div>
+                <h3 class="service-title">Maintenance</h3>
+                <p>Professional maintenance and service packages to keep your vehicle in top condition.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">📝</div>
+                <h3 class="service-title">Registration Support</h3>
+                <p>Complete assistance with vehicle registration and documentation processes.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="testimonials">
+        <h2 class="section-title">Customer Testimonials</h2>
+        <div class="testimonial-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-text">"I was looking for a Toyota Corolla Cross and T AutoMart helped me find the perfect one at a great price. The import process was smooth and they handled all the documentation."</p>
+                <div class="testimonial-author">
+                    <img src="img/zahid.jpg" alt="Customer" class="author-img">
+                    <div class="author-info">
+                        <h4>Zahid Hasan</h4>
+                        <p>Dhaka</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"Excellent service from start to finish. They have a great selection of cars and the sales team is very knowledgeable. My Honda Vezel arrived in perfect condition!\"</p>
+                <div class="testimonial-author">
+                    <img src="img/akash.jpg" alt="Customer" class="author-img">
+                    <div class="author-info">
+                        <h4>Wazed Akash</h4>
+                        <p>Chittagong</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"After months of searching, I finally found my dream car at T AutoMart. Their after-sales service is impressive, and they genuinely care about customer satisfaction."</p>
+                <div class="testimonial-author">
+                    <img src="img/rahim.jpg" alt="Customer" class="author-img">
+                    <div class="author-info">
+                        <h4>Mohammad Rahim</h4>
+                        <p>Sylhet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>About Us</h3>
+                <p>T AutoMart specializes in importing quality vehicles from Japan. We offer a wide range of cars with excellent service and competitive prices.</p>
+                <div class="social-icons">
+                    <a href="#"><span>fb</span></a>
+                    <a href="#"><span>tw</span></a>
+                    <a href="#"><span>ig</span></a>
+                    <a href="#"><span>yt</span></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#cars">Cars</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#imports">About Us</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="login admin.html">Admin Login</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact</h3>
+                <ul>
+                    <li>314, S.K Mujib road</li>
+                    <li>Agrabad, Chattogram</li>
+                    <li>Bangladesh</li>
+                    <li>Phone: +880 01641651871</li>
+                    <li>WhatsApp: +880 1641651871</li>
+                    <li>Email: shariaarfin096@gmail.com</li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Business Hours</h3>
+                <ul>
+                    <li>24/7 (Online)</li>
+                    <li>Saturday-Thursday: 11:00 am-9:00 pm</li>
+                    <li>Friday: Closed</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 T AutoMart and <a href="https://learnifyresearchlab.com/index.html#hero" target="_blank">Learnify Research Lab</a>. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase Configuration - Replace with your actual credentials
+        const firebaseConfig = {
+             apiKey: "AIzaSyBUQdsGY8uz-U2kjzj7J8bM8a2mz-62IsI",
+            authDomain: "t-automart.firebaseapp.com",
+            projectId: "t-automart",
+            storageBucket: "t-automart.firebasestorage.app",
+            messagingSenderId: "991276660416",
+            appId: "1:991276660416:web:b4468838b206e23c521f25",
+            measurementId: "G-640V7VD1BZ"
+        };
+
+        // Initialize Firebase
+        let db;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            console.log('Firebase initialized successfully on index.html');
+        } catch (error) {
+            console.error('Firebase initialization failed on index.html:', error);
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const carGrid = document.getElementById('car-grid');
+            const popup = document.getElementById('images-popup');
+            const closePopup = document.querySelector('#images-popup .close-popup'); // Select close button within image popup
+            const imagesContainer = document.getElementById('car-images-container');
+             const loadingMessage = document.getElementById('loading-cars');
+
+
+            // Mobile menu toggle functionality
+            const menuToggle = document.getElementById('menu-toggle');
+            const mainNav = document.getElementById('main-nav');
+
+            if (menuToggle && mainNav) {
+                menuToggle.addEventListener('click', function() {
+                    mainNav.classList.toggle('active');
+                });
+            }
+
+            // Close mobile menu when clicking a link
+            const navLinks = document.querySelectorAll('#main-nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        mainNav.classList.remove('active');
+                    }
+                });
+            });
+
+            // Scroll progress indicator
+            window.onscroll = function() {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+
+                const progressBar = document.getElementById("progress-bar");
+                if (progressBar) {
+                    progressBar.style.width = scrolled + "%";
+                }
+            };
+
+            // Scroll indicator functionality
+            const scrollIndicator = document.createElement('div');
+            scrollIndicator.className = 'scroll-indicator';
+            scrollIndicator.innerHTML = '<span>Scroll</span><i class="fas fa-chevron-down"></i>';
+            document.querySelector('.hero').appendChild(scrollIndicator);
+
+            scrollIndicator.addEventListener('click', function() {
+                const featuredCarsSection = document.getElementById('cars');
+                if (featuredCarsSection) {
+                    featuredCarsSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 200) {
+                    scrollIndicator.classList.add('hidden');
+                } else {
+                    scrollIndicator.classList.remove('hidden');
+                }
+            });
+
+             // Enhanced back-to-top button functionality
+            const backToTopButton = document.createElement('div');
+            backToTopButton.id = 'back-to-top';
+            backToTopButton.className = 'back-to-top enhanced';
+            backToTopButton.innerHTML = '<i class="fas fa-arrow-up"></i>';
+            document.body.appendChild(backToTopButton);
+
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.classList.add('show');
+                } else {
+                    backToTopButton.classList.remove('show');
+                }
+            });
+
+            backToTopButton.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+
+            // Function to render cars
+            function renderCars(carsToRender) {
+                if (!carGrid) return; // Ensure carGrid exists
+
+                carGrid.innerHTML = ''; // Clear existing cars
+
+                if (carsToRender.length === 0) {
+                    carGrid.innerHTML = '<p style="text-align: center; color: #6b7280;">No available vehicles at the moment.</p>';
+                    return;
+                }
+
+                // Only show a fixed number of cars (e.g., top 6) for the homepage
+                carsToRender.forEach(car => {
+                    const card = document.createElement('div');
+                    card.className = 'car-card';
+                    // Use the first image if available, otherwise a fallback
+                    const imageSrc = (car.images && car.images.length > 0 && car.images[0].url) ? car.images[0].url : 'https://via.placeholder.com/400x300?text=No+Image+Available'; // Explicitly check car.images[0].url
+                    const statusClass = car.status?.toLowerCase() || 'unknown';
+
+                    card.innerHTML = `
+                        <div class="car-image" style="background-image: url('${imageSrc}'); height:200px; background-size:cover; background-position: center; border-radius: 5px 5px 0 0;"></div>
+                        <div class="car-details">
+                            <h3 class="car-title">${car.make || 'Unknown Make'} ${car.model || 'Unknown Model'}</h3>
+                            <div class="car-price">৳${Number(car.price || 0).toLocaleString()}</div>
+                            <div class="car-info">
+                                <span>${car.year || 'N/A'}</span>
+                                <span>${car.mileage || 'N/A'} km</span>
+                                <span>${car.color || 'N/A'}</span>
+                            </div>
+                            <p class="car-description">${car.description?.slice(0, 100) || ''}...</p>
+                             <span class="car-status ${statusClass}">${car.status || 'Unknown'}</span>
+                        </div>
+                    `;
+
+                    // Add click event to show car images in the popup
+                    card.addEventListener('click', () => {
+                         document.querySelector('.car-title-popup').textContent = `${car.make || 'Vehicle'} Images`;
+                        imagesContainer.innerHTML = '';
+
+                        // Loop over car images and display them in popup
+                        if (car.images && car.images.length > 0) {
+                             car.images.forEach(src => {
+                                const imageDiv = document.createElement('div');
+                                imageDiv.className = 'car-image-item';
+                                const img = document.createElement('img');
+                                img.src = src.url;
+                                img.alt = `${car.make || 'Vehicle'} Image`;
+                                // Add error handling for images
+                                img.onerror = (event) => {
+                                     event.target.src = 'https://via.placeholder.com/400x300?text=Image+Load+Error';
+                                };
+                                imageDiv.appendChild(img);
+                                imagesContainer.appendChild(imageDiv);
+                            });
+                        } else {
+                              imagesContainer.innerHTML = '<p style="text-align: center; color: #6b7280;">No additional images available.</p>';
+                        }
+
+
+                        popup.style.display = 'flex';
+                        document.body.style.overflow = 'hidden'; // Prevent scrolling background
+                    });
+
+                    carGrid.appendChild(card);
+                });
+            }
+
+            // Fetch cars from Firebase in real-time
+            if (db) {
+                 db.collection('cars')
+                    .where('status', '==', 'available') // Filter by available cars
+                    .orderBy('createdAt', 'desc') // Order by creation date (latest first)
+                    .onSnapshot(snapshot => {
+                        loadingMessage.style.display = 'none'; // Hide loading message
+
+                        const availableCars = [];
+                        snapshot.forEach(doc => {
+                            availableCars.push({ id: doc.id, ...doc.data() });
+                        });
+                         console.log("Fetched Available Cars:", availableCars); // Log fetched data
+
+                        renderCars(availableCars);
+
+                    }, error => {
+                        console.error('Error fetching cars:', error);
+                         loadingMessage.textContent = 'Error loading vehicles.'; // Update loading message on error
+                         loadingMessage.style.color = '#ef4444'; // Red color for error
+                    });
+            } else {
+                 loadingMessage.textContent = 'Database not available. Cannot load vehicles.'; // Update loading message if Firebase not initialized
+                 loadingMessage.style.color = '#ef4444'; // Red color for error
+            }
+
+
+            // Close image popup functionality
+            closePopup.addEventListener('click', () => {
+                popup.style.display = 'none';
+                document.body.style.overflow = 'auto'; // Restore scrolling
+            });
+
+            // Close popup when clicking outside the content
+            popup.addEventListener('click', (e) => {
+                if (e.target === popup) {
+                    popup.style.display = 'none';
+                    document.body.style.overflow = 'auto'; // Restore scrolling
+                }
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>
