@@ -479,7 +479,6 @@
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             transition: background-color 0.3s;
-            text-decoration: none; /* removes underline */
         }
 
         .social-icons a:hover {
@@ -1076,36 +1075,28 @@ of premium and affordable vehicles. Trusted by thousands of satisfied customers 
     <!-- Search Section -->
     <section id="search" class="search-section">
         <div class="search-container">
-            <select name="make" id="make">
+            <select id="make-select">
                 <option value="">Select Make</option>
-                <option value="toyota">Toyota</option>
-                <option value="honda">Honda</option>
-                <option value="mazda">Mazda</option>
-                <option value="nissan">Nissan</option>
-                <option value="suzuki">Suzuki</option>
+                <!-- Options will be populated by JavaScript -->
             </select>
-            <select name="model" id="model">
-                <option value="">Select Model</option>
-            </select>
-            <select name="year" id="year">
+             <!-- Model select removed -->
+            <select id="year-select">
                 <option value="">Select Year</option>
-                <option value="2025">2025</option>
-                <option value="2024">2024</option>
-                <option value="2023">2023</option>
-                <option value="2022">2022</option>
-                <option value="2021">2021</option>
+                <!-- Options will be populated by JavaScript -->
             </select>
-            <button id="search-btn">Search Cars</button>
+            <button id="search-button" class="btn">Search Cars</button>
         </div>
     </section>
 
 
 <!-- Featured Cars Section -->
 <section id="cars" class="featured-cars">
-  <h2 class="section-title">Featured Vehicles</h2>
-  <div class="cars-grid" id="car-grid">
+  <h2 class="section-title">Search Results</h2> <!-- Updated title -->
+  <div class="cars-grid" id="cars-grid"> <!-- Updated ID -->
     <!-- Loading message -->
     <p id="loading-cars" style="text-align: center; color: #6b7280;">Loading vehicles...</p>
+    <!-- No results message -->
+    <p id="no-results-message" style="display: none; text-align: center;">No cars found matching your criteria.</p>
   </div>
 </section>
 
@@ -1182,7 +1173,7 @@ of premium and affordable vehicles. Trusted by thousands of satisfied customers 
                 <div class="testimonial-author">
                     <img src="img/rahim.jpg" alt="Customer" class="author-img">
                     <div class="author-info">
-                        <h4>Mohammad Rahim</h4>
+                        <h4>Foysal Ibrahim</h4>
                         <p>Sylhet</p>
                     </div>
                 </div>
@@ -1193,23 +1184,22 @@ of premium and affordable vehicles. Trusted by thousands of satisfied customers 
     <footer id="contact">
         <div class="footer-container">
             <div class="footer-column">
-            <h3>About Us</h3>
-            <p>T AutoMart specializes in importing quality vehicles from Japan. We offer a wide range of cars with excellent service and competitive prices.</p>
-  
-            <div class="social-icons">
-  <a href="YOUR_FACEBOOK_URL" aria-label="Facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
-  <a href="YOUR_WHATSAPP_URL" aria-label="WhatsApp" target="_blank"><i class="fab fa-whatsapp"></i></a>
-  <a href="YOUR_YOUTUBE_URL" aria-label="YouTube" target="_blank"><i class="fab fa-youtube"></i></a>
-</div>
-
-    </div>
+                <h3>About Us</h3>
+                <p>T AutoMart specializes in importing quality vehicles from Japan. We offer a wide range of cars with excellent service and competitive prices.</p>
+                <div class="social-icons">
+                    <a href="#"><span>fb</span></a>
+                    <a href="#"><span>tw</span></a>
+                    <a href="#"><span>ig</span></a>
+                    <a href="#"><span>yt</span></a>
+                </div>
+            </div>
             <div class="footer-column">
                 <h3>Quick Links</h3>
                 <ul>
                     <li><a href="#home">Home</a></li>
                     <li><a href="#cars">Cars</a></li>
                     <li><a href="#services">Services</a></li>
-                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#imports">About Us</a></li>
                     <li><a href="#contact">Contact</a></li>
                     <li><a href="login admin.html">Admin Login</a></li>
                 </ul>
@@ -1229,7 +1219,7 @@ of premium and affordable vehicles. Trusted by thousands of satisfied customers 
                 <h3>Business Hours</h3>
                 <ul>
                     <li>24/7 (Online)</li>
-                    <li>Saturday-Thursday: 11:00 am-9:00 pm (Offline)</li>
+                    <li>Saturday-Thursday: 11:00 am-9:00 pm</li>
                     <li>Friday: Closed</li>
                 </ul>
             </div>
@@ -1268,11 +1258,199 @@ of premium and affordable vehicles. Trusted by thousands of satisfied customers 
 
 
         document.addEventListener('DOMContentLoaded', () => {
-            const carGrid = document.getElementById('car-grid');
+            const makeSelect = document.getElementById('make-select');
+            // const modelSelect = document.getElementById('model-select'); // Removed model select
+            const yearSelect = document.getElementById('year-select');
+            const searchButton = document.getElementById('search-button');
+            const carsGrid = document.getElementById('cars-grid'); // Use cars-grid for search results
+            const noResultsMessage = document.getElementById('no-results-message');
+            const loadingMessage = document.getElementById('loading-cars');
+
+
+            let allCars = []; // To store all cars fetched initially
+
+            // Function to populate dropdowns with unique values from car data
+            async function populateDropdowns() {
+                if (!db) {
+                    console.error('Firestore not initialized.');
+                    return;
+                }
+                try {
+                    const snapshot = await db.collection('cars').get();
+                    allCars = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                    const makes = [...new Set(allCars.map(car => car.make).filter(Boolean))].sort(); // Filter out null/undefined
+                    const years = [...new Set(allCars.map(car => car.year).filter(Boolean))].sort((a, b) => b - a); // Filter out null/undefined and sort years in descending order
+
+                    // Clear previous options before populating
+                    makeSelect.innerHTML = '<option value="">Select Make</option>';
+                    yearSelect.innerHTML = '<option value="">Select Year</option>';
+
+                    makes.forEach(make => {
+                        const option = document.createElement('option');
+                        option.value = make;
+                        option.textContent = make;
+                        makeSelect.appendChild(option);
+                    });
+
+                    years.forEach(year => {
+                        const option = document.createElement('option');
+                        option.value = year;
+                        option.textContent = year;
+                        yearSelect.appendChild(option);
+                    });
+
+                } catch (error) {
+                    console.error('Error populating dropdowns:', error);
+                }
+            }
+
+             // Removed Model select change listener
+
+            // Function to render a single car card
+            function renderCar(car) {
+                const card = document.createElement('div');
+                card.className = 'car-card';
+                // Use the first image if available, otherwise a fallback
+                const imageSrc = (car.images && car.images.length > 0 && car.images[0].url) ? car.images[0].url : 'https://via.placeholder.com/400x300?text=No+Image+Available'; // Explicitly check car.images[0].url
+                const statusClass = car.status?.toLowerCase() || 'unknown';
+
+                card.innerHTML = `
+                    <div class="car-image" style="background-image: url('${imageSrc}'); height:200px; background-size:cover; background-position: center; border-radius: 5px 5px 0 0;"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">${car.make || 'Unknown Make'} ${car.model || 'Unknown Model'}</h3>
+                        <div class="car-price">৳${Number(car.price || 0).toLocaleString()}</div>
+                        <div class="car-info">
+                            <span>${car.year || 'N/A'}</span>
+                            <span>${car.mileage || 'N/A'} km</span>
+                            <span>${car.color || 'N/A'}</span>
+                        </div>
+                        <p class="car-description">${car.description?.slice(0, 100) || ''}...</p>
+                         <span class="car-status ${statusClass}">${car.status || 'Unknown'}</span>
+                    </div>
+                `;
+
+                // Add click event to show car images in the popup
+                card.addEventListener('click', () => {
+                     document.querySelector('.car-title-popup').textContent = `${car.make || 'Vehicle'} Images`;
+                    const imagesContainer = document.getElementById('car-images-container');
+                    const popup = document.getElementById('images-popup');
+                    imagesContainer.innerHTML = '';
+
+                    // Loop over car images and display them in popup
+                    if (car.images && car.images.length > 0) {
+                         car.images.forEach(src => {
+                            const imageDiv = document.createElement('div');
+                            imageDiv.className = 'car-image-item';
+                            const img = document.createElement('img');
+                            img.src = src.url;
+                            img.alt = `${car.make || 'Vehicle'} Image`;
+                            // Add error handling for images
+                            img.onerror = (event) => {
+                                 event.target.src = 'https://via.placeholder.com/400x300?text=Image+Load+Error';
+                            };
+                            imageDiv.appendChild(img);
+                            imagesContainer.appendChild(imageDiv);
+                        });
+                    } else {
+                          imagesContainer.innerHTML = '<p style="text-align: center; color: #6b7280;">No additional images available.</p>';
+                    }
+
+
+                    popup.style.display = 'flex';
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling background
+                });
+
+                return card; // Return the created card element
+            }
+
+            // Function to display cars in the grid
+            function displayCars(carsToDisplay) {
+                carsGrid.innerHTML = ''; // Clear previous results
+                noResultsMessage.style.display = 'none'; // Hide no results message
+
+                if (carsToDisplay.length === 0) {
+                    noResultsMessage.style.display = 'block'; // Show no results message
+                    return;
+                }
+
+                carsToDisplay.forEach(car => {
+                    carsGrid.appendChild(renderCar(car));
+                });
+            }
+
+
+            // Event listener for the search button
+            searchButton.addEventListener('click', async () => {
+                const selectedMake = makeSelect.value;
+                const selectedYear = yearSelect.value; // Get selected year
+
+                let filteredCars = allCars; // Start with all fetched cars
+
+                // Apply filters
+                if (selectedMake) {
+                    filteredCars = filteredCars.filter(car => car.make === selectedMake);
+                }
+                // Apply year filter
+                if (selectedYear) {
+                    // Ensure year comparison is correct (assuming year is stored as a string or number)
+                    filteredCars = filteredCars.filter(car => car.year == selectedYear); // Using == for flexible comparison
+                }
+
+                displayCars(filteredCars);
+            });
+
+
+            // Initial loading of cars and populating dropdowns
+            // This will fetch all cars and populate the dropdowns.
+            // It will also display all 'available' cars initially in the cars grid.
+            if (db) {
+                populateDropdowns();
+
+                // Fetch and display initially available cars
+                db.collection('cars')
+                    .where('status', '==', 'available') // Filter by available cars
+                    .orderBy('createdAt', 'desc') // Order by creation date (latest first)
+                    .onSnapshot(snapshot => {
+                        loadingMessage.style.display = 'none'; // Hide loading message
+
+                        const availableCars = [];
+                        snapshot.forEach(doc => {
+                            availableCars.push({ id: doc.id, ...doc.data() });
+                        });
+                         console.log("Fetched Available Cars:", availableCars); // Log fetched data
+
+                        displayCars(availableCars);
+
+                    }, error => {
+                        console.error('Error fetching cars:', error);
+                         loadingMessage.textContent = 'Error loading vehicles.'; // Update loading message on error
+                         loadingMessage.style.color = '#ef4444'; // Red color for error
+                    });
+            } else {
+                 loadingMessage.textContent = 'Database not available. Cannot load vehicles.'; // Update loading message if Firebase not initialized
+                 loadingMessage.style.color = '#ef4444'; // Red color for error
+            }
+
+
+            // Close image popup functionality
             const popup = document.getElementById('images-popup');
             const closePopup = document.querySelector('#images-popup .close-popup'); // Select close button within image popup
-            const imagesContainer = document.getElementById('car-images-container');
-             const loadingMessage = document.getElementById('loading-cars');
+
+             if (closePopup && popup) {
+                closePopup.addEventListener('click', () => {
+                    popup.style.display = 'none';
+                    document.body.style.overflow = 'auto'; // Restore scrolling
+                });
+
+                // Close popup when clicking outside the content
+                popup.addEventListener('click', (e) => {
+                    if (e.target === popup) {
+                        popup.style.display = 'none';
+                        document.body.style.overflow = 'auto'; // Restore scrolling
+                    }
+                });
+             }
 
 
             // Mobile menu toggle functionality
@@ -1307,26 +1485,6 @@ of premium and affordable vehicles. Trusted by thousands of satisfied customers 
                 }
             };
 
-            // Scroll indicator functionality
-            const scrollIndicator = document.createElement('div');
-            scrollIndicator.className = 'scroll-indicator';
-            scrollIndicator.innerHTML = '<span>Scroll</span><i class="fas fa-chevron-down"></i>';
-            document.querySelector('.hero').appendChild(scrollIndicator);
-
-            scrollIndicator.addEventListener('click', function() {
-                const featuredCarsSection = document.getElementById('cars');
-                if (featuredCarsSection) {
-                    featuredCarsSection.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-
-            window.addEventListener('scroll', function() {
-                if (window.scrollY > 200) {
-                    scrollIndicator.classList.add('hidden');
-                } else {
-                    scrollIndicator.classList.remove('hidden');
-                }
-            });
 
              // Enhanced back-to-top button functionality
             const backToTopButton = document.createElement('div');
@@ -1348,115 +1506,6 @@ of premium and affordable vehicles. Trusted by thousands of satisfied customers 
                     top: 0,
                     behavior: 'smooth'
                 });
-            });
-
-
-            // Function to render cars
-            function renderCars(carsToRender) {
-                if (!carGrid) return; // Ensure carGrid exists
-
-                carGrid.innerHTML = ''; // Clear existing cars
-
-                if (carsToRender.length === 0) {
-                    carGrid.innerHTML = '<p style="text-align: center; color: #6b7280;">No available vehicles at the moment.</p>';
-                    return;
-                }
-
-                // Only show a fixed number of cars (e.g., top 6) for the homepage
-                carsToRender.forEach(car => {
-                    const card = document.createElement('div');
-                    card.className = 'car-card';
-                    // Use the first image if available, otherwise a fallback
-                    const imageSrc = (car.images && car.images.length > 0 && car.images[0].url) ? car.images[0].url : 'https://via.placeholder.com/400x300?text=No+Image+Available'; // Explicitly check car.images[0].url
-                    const statusClass = car.status?.toLowerCase() || 'unknown';
-
-                    card.innerHTML = `
-                        <div class="car-image" style="background-image: url('${imageSrc}'); height:200px; background-size:cover; background-position: center; border-radius: 5px 5px 0 0;"></div>
-                        <div class="car-details">
-                            <h3 class="car-title">${car.make || 'Unknown Make'} ${car.model || 'Unknown Model'}</h3>
-                            <div class="car-price">৳${Number(car.price || 0).toLocaleString()}</div>
-                            <div class="car-info">
-                                <span>${car.year || 'N/A'}</span>
-                                <span>${car.mileage || 'N/A'} km</span>
-                                <span>${car.color || 'N/A'}</span>
-                            </div>
-                            <p class="car-description">${car.description?.slice(0, 100) || ''}...</p>
-                             <span class="car-status ${statusClass}">${car.status || 'Unknown'}</span>
-                        </div>
-                    `;
-
-                    // Add click event to show car images in the popup
-                    card.addEventListener('click', () => {
-                         document.querySelector('.car-title-popup').textContent = `${car.make || 'Vehicle'} Images`;
-                        imagesContainer.innerHTML = '';
-
-                        // Loop over car images and display them in popup
-                        if (car.images && car.images.length > 0) {
-                             car.images.forEach(src => {
-                                const imageDiv = document.createElement('div');
-                                imageDiv.className = 'car-image-item';
-                                const img = document.createElement('img');
-                                img.src = src.url;
-                                img.alt = `${car.make || 'Vehicle'} Image`;
-                                // Add error handling for images
-                                img.onerror = (event) => {
-                                     event.target.src = 'https://via.placeholder.com/400x300?text=Image+Load+Error';
-                                };
-                                imageDiv.appendChild(img);
-                                imagesContainer.appendChild(imageDiv);
-                            });
-                        } else {
-                              imagesContainer.innerHTML = '<p style="text-align: center; color: #6b7280;">No additional images available.</p>';
-                        }
-
-
-                        popup.style.display = 'flex';
-                        document.body.style.overflow = 'hidden'; // Prevent scrolling background
-                    });
-
-                    carGrid.appendChild(card);
-                });
-            }
-
-            // Fetch cars from Firebase in real-time
-            if (db) {
-                 db.collection('cars')
-                    .where('status', '==', 'available') // Filter by available cars
-                    .orderBy('createdAt', 'desc') // Order by creation date (latest first)
-                    .onSnapshot(snapshot => {
-                        loadingMessage.style.display = 'none'; // Hide loading message
-
-                        const availableCars = [];
-                        snapshot.forEach(doc => {
-                            availableCars.push({ id: doc.id, ...doc.data() });
-                        });
-                         console.log("Fetched Available Cars:", availableCars); // Log fetched data
-
-                        renderCars(availableCars);
-
-                    }, error => {
-                        console.error('Error fetching cars:', error);
-                         loadingMessage.textContent = 'Error loading vehicles.'; // Update loading message on error
-                         loadingMessage.style.color = '#ef4444'; // Red color for error
-                    });
-            } else {
-                 loadingMessage.textContent = 'Database not available. Cannot load vehicles.'; // Update loading message if Firebase not initialized
-                 loadingMessage.style.color = '#ef4444'; // Red color for error
-            }
-
-
-            // Close image popup functionality
-            closePopup.addEventListener('click', () => {
-                popup.style.display = 'none';
-                document.body.style.overflow = 'auto'; // Restore scrolling
-            });
-
-            // Close popup when clicking outside the content
-            popup.addEventListener('click', (e) => {
-                if (e.target === popup) {
-                    popup.style.display = 'none';
-                    document.body.style.overflow = 'auto'; // Restore scrolling
-                }
             });
 
         });
