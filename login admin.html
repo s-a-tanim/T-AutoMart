@@ -474,7 +474,7 @@
 </head>
 <body>
     <header>
-        <a href="/T-AutoMart/" class="logo">T Auto<span>Mart</span></a>
+        <a href="./index.html" class="logo">T Auto<span>Mart</span></a>
         <div id="header-actions"></div>
     </header>
 
@@ -531,6 +531,7 @@
                     <label for="car-model-package">Model Package</label>
                     <input type="text" id="car-model-package" name="modelPackage">
                     </div>
+
                 </div>
 
                 <div class="form-row">
@@ -981,6 +982,7 @@
             const carData = {
                 make: formData.get('make'),
                 model: formData.get('model'),
+                modelPackage: formData.get('modelPackage'), // Add this line
                 year: parseInt(formData.get('year')),
                 price: parseInt(formData.get('price')),
                 color: formData.get('color'),
