@@ -1324,6 +1324,7 @@ of premium and affordable vehicles. Trusted by thousands of satisfied customers 
                         <h3 class="car-title">${car.make || 'Unknown Make'} ${car.model || 'Unknown Model'}</h3>
                         <div class="car-price">৳${Number(car.price || 0).toLocaleString()}</div>
                         <div class="car-info">
+                            <span>${car.modelPackage || 'N/A'}</span>
                             <span>${car.year || 'N/A'}</span>
                             <span>${car.mileage || 'N/A'} km</span>
                             <span>${car.color || 'N/A'}</span>
